@@ -7,13 +7,13 @@ use CodeIgniter\Model;
 class ITCModel extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'itcs';
+    protected $table            = 'itc';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = ['name', 'age', 'gender'];
 
     // Dates
     protected $useTimestamps = false;
