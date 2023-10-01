@@ -19,6 +19,8 @@ class Filters extends BaseConfig
      * @phpstan-var array<string, class-string>
      */
     public array $aliases = [
+        'admin_auth'    => \App\Filters\AdminAuthFilter::class,
+        'authGuard'     => \app\Filters\AuthGuard::class,
         'csrf'          => CSRF::class,
         'toolbar'       => DebugToolbar::class,
         'honeypot'      => Honeypot::class,
@@ -38,6 +40,7 @@ class Filters extends BaseConfig
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
+            'auth' => ['except' => ['public', 'pages/*']], 
         ],
         'after' => [
             'toolbar',
@@ -66,5 +69,9 @@ class Filters extends BaseConfig
      * Example:
      * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
      */
-    public array $filters = [];
+    public array $filters = [
+        'admin_auth' => [
+            'before' => ['admin/*'], // Apply the filter to all admin routes
+        ]
+    ];
 }

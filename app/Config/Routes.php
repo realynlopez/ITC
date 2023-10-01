@@ -1,33 +1,47 @@
 <?php
 
-use CodeIgniter\Router\RouteCollection;
+namespace Config;
 
-/**
- * @var RouteCollection $routes
- */
-$routes->get('/', 'Home::index');
+use CodeIgniter\Config\BaseConfig;
 
-$routes->get('products', 'ProductController::getIndex');
-$routes->get('products/(:any)', 'ProductController::find/$1');
+class AppRoutes extends BaseConfig
+{
+    public $defaultNamespace = 'App\Controllers';
 
-// $routes->get('/users/profile', function(){
-//     return "i am user profile";
+    public function __construct()
+    {
+        $routes = service('routes');
+        $routes->setAutoRoute(true);
+        // Home Page (Product Listing)
+        $routes->get('/', 'Home::index');
 
-// });
+        // User Registration
+        $routes->get('/register', 'UserController::register');
+        $routes->post('/register', 'UserController::register'); // Handle form submission
 
-$routes->group('users', static function ($routes) {
+        // User Login
+        $routes->get('/login', 'UserController::login');
+        $routes->post('/login', 'UserController::login'); // Handle form submission
 
-   $routes->get('order', function(){
-       return "i am user order";
+        $routes->group('admin', ['filter' => 'admin_auth'], function ($routes) {
+            // Admin Dashboard
+            $routes->get('/', 'AdminController::dashboard');
 
-   });
-   $routes->get('profile', function(){
-       return "i am user profile";
+            // Admin Product Management
+            $routes->get('products', 'AdminController::products'); // Display products
+            $routes->get('products/add', 'AdminController::addProduct'); // Add product form
+            $routes->post('products/add', 'AdminController::saveProduct'); // Handle product creation
+            $routes->get('products/edit/(:num)', 'AdminController::editProduct/$1'); // Edit product form
+            $routes->post('products/edit/(:num)', 'AdminController::updateProduct/$1'); // Handle product update
+            $routes->get('products/delete/(:num)', 'AdminController::deleteProduct/$1'); // Delete product
 
-   });
+            // Other admin routes...
+        });
 
+        // User Profile (if applicable)
+        $routes->get('profile', 'ProfileController::index');
 
-    // $routes->get('profile', 'ProductController::profile');
-    // $routes->get('order', 'ProductController::order');
-
-});
+        // Enable auto-routing for any remaining controllers and methods
+        $routes->setAutoRoute(true);
+    }
+}
